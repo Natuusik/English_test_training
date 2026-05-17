@@ -1,0 +1,204 @@
+/* ====== ГЛОБАЛЬНЫЕ СТИЛИ ====== */
+body {
+    margin: 0;
+    font-family: "Inter", Arial, sans-serif;
+    background: #f4f2ff;
+    display: flex;
+    height: 100vh;
+    color: #3a2f6e;
+}
+
+/* Общие элементы */
+input, button, select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: 1px solid #d6d0f5;
+    font-size: 16px;
+    background: #ffffff;
+    transition: 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: #8a76ff;
+    box-shadow: 0 0 0 3px rgba(138,118,255,0.25);
+    outline: none;
+}
+
+button {
+    background: linear-gradient(135deg, #7b5bff, #9a7bff);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: linear-gradient(135deg, #6a4aff, #8c6aff);
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* ====== ЛЕВАЯ ПАНЕЛЬ ====== */
+.sidebar {
+    width: 260px;
+    background: #ece7ff;
+    padding: 22px;
+    box-shadow: 3px 0 12px rgba(0,0,0,0.08);
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    margin-top: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #5a46c5;
+}
+
+.topic {
+    padding: 14px;
+    background: #ffffff;
+    border-radius: 12px;
+    margin-top: 12px;
+    cursor: pointer;
+    font-size: 17px;
+    transition: 0.2s;
+    border: 1px solid #e3ddff;
+}
+
+.topic:hover {
+    background: #e9e4ff;
+    transform: translateX(4px);
+}
+
+/* ====== ЦЕНТР ====== */
+.content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+h3 {
+    margin-top: 25px;
+    font-size: 20px;
+    color: #5a46c5;
+}
+
+.word-list {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 12px;
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid #e3ddff;
+}
+
+.word-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0ebff;
+    font-size: 17px;
+}
+
+.word-item:last-child {
+    border-bottom: none;
+}
+
+.word {
+    font-size: 32px;
+    margin-top: 25px;
+    color: #6a54e0;
+    font-weight: 700;
+    text-align: center;
+}
+
+.result {
+    font-size: 22px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* ====== ПРАВАЯ ПАНЕЛЬ ====== */
+.voices {
+    width: 260px;
+    background: #f0eaff;
+    padding: 22px;
+    box-shadow: -3px 0 12px rgba(0,0,0,0.08);
+    overflow-y: auto;
+}
+
+.voices h3 {
+    margin-top: 0;
+}
+
+/* ====== БУРГЕР ====== */
+.burger {
+    display: none;
+    padding: 12px 20px;
+    font-size: 22px;
+    background: #7b5bff;
+    color: white;
+    border-radius: 10px;
+    width: auto;
+}
+
+.burger-menu {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 260px;
+    height: 100%;
+    background: #ece7ff;
+    padding: 22px;
+    transition: 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 3px 0 12px rgba(0,0,0,0.15);
+}
+
+.burger-menu.open {
+    left: 0;
+}
+
+/* ====== АДАПТАЦИЯ ====== */
+@media (max-width: 900px) {
+    body {
+        flex-direction: column;
+    }
+
+    .sidebar, .voices {
+        display: none;
+    }
+
+    .burger {
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    .word {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 600px) {
+    h2, h3 {
+        font-size: 20px;
+    }
+
+    input, button, select {
+        font-size: 17px;
+    }
+
+    .word {
+        font-size: 26px;
+    }
+}

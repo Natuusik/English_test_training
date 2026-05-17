@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тренажёр слов</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/vosk-browser/dist/vosk.js"></script>
+
+</head>
+<body>
+
+<!-- ЛЕВАЯ ПАНЕЛЬ -->
+<div class="sidebar">
+    <h2>Темы</h2>
+
+    <input id="newTopic" placeholder="Новая тема">
+    <button id="addTopicBtn">Добавить тему</button>
+
+    <div id="topicsList"></div>
+</div>
+
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="content">
+    <button class="burger" id="burgerBtn">☰ Меню</button>
+
+    <h2 id="topicTitle">Выберите тему</h2>
+
+    <div id="topicArea" style="display:none;">
+        <h3>Добавить слово</h3>
+        <input id="wordA" placeholder="Слово (англ/рус)">
+        <input id="wordB" placeholder="Перевод">
+        <button id="addWordBtn">Добавить слово</button>
+
+        <h3>Список слов</h3>
+        <div id="wordList" class="word-list"></div>
+
+        <h3>Тренировка</h3>
+        <select id="direction">
+            <option value="ru-en">Русский → Английский</option>
+            <option value="en-ru">Английский → Русский</option>
+        </select>
+
+        <button id="startBtn">Старт авто‑тренировки</button>
+        <button id="stopBtn">Стоп</button>
+
+        <div id="word" class="word">—</div>
+        <div id="result" class="result"></div>
+
+        <button id="speakBtn" onclick="speakCurrent()">🔊 Прослушать</button>
+    </div>
+</div>
+
+<!-- ПРАВАЯ ПАНЕЛЬ -->
+<div class="voices">
+    <h3>Скорость речи</h3>
+    <input type="range" id="voiceRate" min="0.3" max="1.2" step="0.1" value="0.8">
+    <div id="rateValue">0.8</div>
+</div>
+
+<!-- БУРГЕР-МЕНЮ -->
+<div id="burgerMenu" class="burger-menu">
+    <h3>Темы</h3>
+    <input id="burgerNewTopic" placeholder="Новая тема">
+    <button id="burgerAddTopicBtn">Добавить тему</button>
+
+    <div id="burgerTopics"></div>
+
+    <h3>Скорость речи</h3>
+    <input type="range" id="burgerRate" min="0.3" max="1.2" step="0.1" value="0.8">
+    <div id="burgerRateValue">0.8</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
