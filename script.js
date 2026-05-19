@@ -1,5 +1,3 @@
-
-
 let data = JSON.parse(localStorage.getItem("topics")) || {};
 let currentTopic = null;
 let currentWord = null;
@@ -154,9 +152,7 @@ function syncRateBurger() {
 }
 
 // =========================
-// =========================
-// =========================
-// ОЗВУЧКА (Web Speech API)
+// ОЗВУЧКА
 // =========================
 
 function speak(text, lang = "en") {
@@ -164,14 +160,9 @@ function speak(text, lang = "en") {
         const utter = new SpeechSynthesisUtterance(text);
 
         utter.lang = lang === "ru" ? "ru-RU" : "en-US";
-
-        if (typeof voiceRate !== "undefined") {
-            utter.rate = parseFloat(voiceRate.value) || 1;
-        } else {
-            utter.rate = 1;
-        }
-
+        utter.rate = parseFloat(voiceRate.value) || 1;
         utter.pitch = 1;
+
         speechSynthesis.speak(utter);
     } catch (e) {
         console.error("Ошибка Web Speech API:", e);
@@ -189,27 +180,32 @@ function speakCurrent() {
         speak(currentWord.a, "en");
     }
 }
+
 // =========================
-// РАСПОЗНАВАНИЕ РЕЧИ
+// РАСПОЗНАВАНИЕ РЕЧИ (СТАРОЕ — ОТКЛЮЧЕНО)
 // =========================
 
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = "en-US"; // важно!
-recognition.interimResults = false;
-recognition.maxAlternatives = 1;
+// const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+// recognition.lang = "en-US";
+// recognition.interimResults = false;
+// recognition.maxAlternatives = 1;
 
-async function startListening() {
-    const text = await stableListen("en-US");   // ждём распознавания
-    checkAnswer(text.toLowerCase());            // отправляем в твою логику
+// recognition.onresult = function(event) {
+//     const spoken = event.results[0][0].transcript;
+//     checkPronunciation(spoken);
+// };
+
+// =========================
+// НОВОЕ СТАБИЛЬНОЕ РАСПОЗНАВАНИЕ
+// =========================
+
+async function startListening(mode) {
+    const text = await stableListen("en-US");
+    checkSmartAnswer(text.toLowerCase(), mode);
 }
 
-
-recognition.onresult = function(event) {
-    const spoken = event.results[0][0].transcript;
-    checkPronunciation(spoken);
-};
 // =========================
-// УМНАЯ ПРОВЕРКА ПРОИЗНОШЕНИЯ
+// ПРОВЕРКА ПРОИЗНОШЕНИЯ
 // =========================
 
 function checkPronunciation(spoken) {
@@ -223,17 +219,18 @@ function checkPronunciation(spoken) {
         speak("Try again");
     }
 }
+
 function isPronunciationCorrect(spoken, correct) {
     spoken = spoken.toLowerCase().trim();
     correct = correct.toLowerCase().trim();
 
     if (spoken === correct) return true;
-
     if (spoken.includes(correct) || correct.includes(spoken)) return true;
 
     const similarity = levenshteinSimilarity(spoken, correct);
-    return similarity >= 0.8; // 80% похожести
+    return similarity >= 0.8;
 }
+
 function levenshteinSimilarity(a, b) {
     const distance = levenshtein(a, b);
     const maxLen = Math.max(a.length, b.length);
@@ -259,8 +256,8 @@ function levenshtein(a, b) {
     return matrix[b.length][a.length];
 }
 
-/// =========================
-// ТРЕНИРОВКА (3 попытки + умная проверка)
+// =========================
+// ТРЕНИРОВКА
 // =========================
 
 let attempts = 0;
@@ -291,17 +288,16 @@ function nextWord() {
     if (dir === "ru-en") {
         wordDiv.textContent = currentWord.b;
         speak(currentWord.b, "ru");
-        listenVosk("en");   // ← заменено
+        startListening("ru-en");
     } else {
         wordDiv.textContent = currentWord.a;
         speak(currentWord.a, "en");
-        listenVosk("ru");   // ← заменено
+        startListening("en-ru");
     }
 }
 
-
 // =========================
-// УМНАЯ ПРОВЕРКА (80% похожести)
+// УМНАЯ ПРОВЕРКА
 // =========================
 
 function checkSmartAnswer(said, mode) {
@@ -337,7 +333,8 @@ function checkSmartAnswer(said, mode) {
                 speak(currentWord.a, "en");
             }
 
-            listenVosk(mode === "ru-en" ? "en" : "ru"); // ← заменено
+            startListening(mode);
+
         }, 2000);
     } else {
         setTimeout(() => {
@@ -345,29 +342,6 @@ function checkSmartAnswer(said, mode) {
             nextWord();
         }, 2000);
     }
-}
-
-async function listenVosk(lang) {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioContext = new AudioContext();
-    const source = audioContext.createMediaStreamSource(stream);
-
-    const processor = audioContext.createScriptProcessor(4096, 1, 1);
-    source.connect(processor);
-    processor.connect(audioContext.destination);
-
-    const recognizer = lang === "en" ? recognizerEN : recognizerRU;
-
-    processor.onaudioprocess = (e) => {
-        const data = e.inputBuffer.getChannelData(0);
-        recognizer.acceptWaveform(data);
-        const result = recognizer.finalResult();
-
-        if (result && result.text) {
-            console.log("Распознано:", result.text);
-            checkSmartAnswer(result.text, lang === "en" ? "ru-en" : "en-ru");
-        }
-    };
 }
 
 // =========================
