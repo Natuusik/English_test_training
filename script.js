@@ -198,9 +198,11 @@ recognition.lang = "en-US"; // важно!
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
-function startListening() {
-    recognition.start();
+async function startListening() {
+    const text = await stableListen("en-US");   // ждём распознавания
+    checkAnswer(text.toLowerCase());            // отправляем в твою логику
 }
+
 
 recognition.onresult = function(event) {
     const spoken = event.results[0][0].transcript;
